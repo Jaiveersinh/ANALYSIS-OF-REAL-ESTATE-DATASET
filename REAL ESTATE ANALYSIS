@@ -1,0 +1,177 @@
+Real Estate Property Analysis
+This repository contains an analysis of a real estate dataset. The dataset includes various attributes related to real estate properties, such as location, price, number of bedrooms, square footage, and more. The analysis explores the relationships between different property features and their impact on property prices.
+
+Table of Contents
+Dataset Overview
+Data Loading
+Initial Data Exploration
+Data Visualization and Analysis
+Price Distribution
+Bedrooms vs. Property Prices
+Waterfront View Impact
+Average Price by Year Built
+Price by Property Location
+Basement Impact on Price
+Correlation Analysis
+Price vs. Square Footage
+Spearman Correlations
+Conclusion
+Requirements
+Usage
+Dataset Overview
+The dataset provides detailed information on real estate properties, including:
+
+Property location
+Price
+Number of bedrooms
+Square footage (living space and lot)
+Number of floors
+Waterfront status
+View
+Condition and grade
+Year built and renovated
+Zip code, latitude, and longitude
+Data Loading
+To load the dataset, ensure you have pandas installed. Use the following code to load the dataset:
+
+python
+Copy code
+import pandas as pd
+
+df = pd.read_excel("/path/to/Housing_dataset.xlsx")
+Initial Data Exploration
+Shape of Dataset
+The dataset contains 21,613 rows and 20 columns.
+
+Number of Cells
+The total number of cells in the dataset is 432,260.
+
+Data Information
+The dataset does not have any missing values and consists of different data types, including integers, floats, and objects.
+
+Data Visualization and Analysis
+Price Distribution
+A histogram was created to visualize the distribution of property prices.
+
+python
+Copy code
+import matplotlib.pyplot as plt
+
+plt.hist(df["price"], bins=20, color=["salmon"], edgecolor="black")
+plt.xlabel("Property Price")
+plt.ylabel("Count")
+plt.title("Distribution of Property Prices")
+plt.show()
+Bedrooms vs. Property Prices
+The average price was calculated for different numbers of bedrooms and visualized using a bar plot.
+
+python
+Copy code
+import matplotlib.pyplot as plt
+
+bedroom_avg_price = df.groupby("bedrooms")["price"].mean()
+
+plt.bar(bedroom_avg_price.index, bedroom_avg_price.values, color=["skyblue", "salmon", "lightgreen"])
+plt.xlabel("Number of Bedrooms")
+plt.ylabel("Average Price")
+plt.title("Average Price by Number of Bedrooms")
+plt.show()
+Waterfront View Impact
+The average price for waterfront vs. non-waterfront properties was compared using a bar plot.
+
+python
+Copy code
+waterfront_avg_price = df.groupby("waterfront")["price"].mean()
+
+plt.bar(waterfront_avg_price.index, waterfront_avg_price.values, color=["skyblue", "salmon"])
+plt.xlabel("Waterfront (0: No, 1: Yes)")
+plt.ylabel("Average Price")
+plt.title("Average Price: Waterfront vs. Non-Waterfront")
+plt.xticks([0, 1], ["Non-Waterfront", "Waterfront"])
+plt.show()
+Average Price by Year Built
+A line plot was created to show how average property prices vary with the year of construction.
+
+python
+Copy code
+import matplotlib.pyplot as plt
+
+Year_avg_price = df.groupby(["yr_built"])["price"].mean()
+
+plt.figure(figsize=(10, 6))
+plt.plot(Year_avg_price.index, Year_avg_price.values, marker='o', color='salmon', label='Average Price')
+plt.xlabel('Year Built')
+plt.ylabel('Average Price')
+plt.title('Average Property Price by Year of Construction')
+plt.grid(True)
+plt.legend()
+plt.show()
+Price by Property Location
+The mean price by year built was analyzed for different property locations using line graphs.
+
+python
+Copy code
+grouped_data = df.groupby(['Property location', 'yr_built'])['price'].mean().reset_index()
+
+unique_locations = grouped_data['Property location'].unique()
+for location in unique_locations:
+    location_data = grouped_data[grouped_data['Property location'] == location]
+    plt.figure(figsize=(8, 3))
+    plt.plot(location_data['yr_built'], location_data['price'], marker='o', color='lightgreen', label=location)
+    plt.xlabel('Year Built')
+    plt.ylabel('Mean Price')
+    plt.title(f'Mean Price by Year Built for {location}')
+    plt.legend()
+    plt.grid(True)
+    plt.show()
+Price Difference with/without Basement
+The impact of having a basement on property price was analyzed.
+
+python
+Copy code
+basement_prices = df.groupby(df['sqft_basement'] > 0)['price'].mean()
+
+print(basement_prices)
+Correlation Analysis
+Price vs. Square Footage
+A joint plot was created to explore the relationship between square footage of living space and property price.
+
+python
+Copy code
+import seaborn as sns
+
+sns.jointplot(x="sqft_living", y="price", data=df, kind='reg', color='salmon')
+plt.show()
+Spearman Correlations
+Spearman correlations were calculated for various features with price:
+
+python
+Copy code
+from scipy import stats
+
+r, p = stats.spearmanr(df['bedrooms'], df['price'])
+print(f'Spearman correlation r between price and bedrooms is {r} with p = {p}')
+
+r, p = stats.spearmanr(df['floors'], df['price'])
+print(f'Spearman correlation r between price and floors is {r} with p = {p}')
+
+r, p = stats.spearmanr(df['view'], df['price'])
+print(f'Spearman correlation r between price and view is {r} with p = {p}')
+
+r, p = stats.spearmanr(df['grade'], df['price'])
+print(f'Spearman correlation r between price and grade is {r} with p = {p}')
+Conclusion
+Property prices generally increase with the number of bedrooms and waterfront status.
+Average property prices have shown varying trends over different years, with peaks in certain years.
+Properties with basements tend to have higher prices compared to those without.
+Correlation analysis indicates strong positive relationships between property prices and features like square footage and grade.
+Requirements
+Python 3.x
+Pandas
+Matplotlib
+Seaborn
+Scipy
+Usage
+Clone the repository or download the dataset.
+Install the required packages.
+Load the dataset and run the analysis scripts provided in the repository.
